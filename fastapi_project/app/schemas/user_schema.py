@@ -1,5 +1,9 @@
-# C:\Users\Mor\Desktop\fastapi_py\fastapi_project\app\schemas\user_schema.py
 from pydantic import BaseModel, EmailStr
+
+class User(BaseModel):  # Add this class if needed
+    id: int
+    username: str
+    email: EmailStr
 
 class UserCreate(BaseModel):
     username: str

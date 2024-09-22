@@ -1,9 +1,9 @@
-# C:\Users\Mor\Desktop\fastapi_py\fastapi_project\app\routers\auth_router.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.schemas.user_schema import UserCreate, UserLogin, UserResponse
 from app.services.user_service import UserService
 from app.database import SessionLocal
+from app.security import create_access_token  # This import should work now
 
 router = APIRouter()
 
@@ -27,4 +27,6 @@ def login_user(user: UserLogin, db: Session = Depends(get_db)):
     db_user = service.get_user_by_username(user.username)
     if not db_user or not service.verify_password(user.password, db_user.hashed_password):
         raise HTTPException(status_code=400, detail="Invalid credentials")
-    return {"message": "Login successful"}
+    
+    token = create_access_token(data={"sub": user.username})  # Create token for the user
+    return {"token": token, "message": "Login successful"}
